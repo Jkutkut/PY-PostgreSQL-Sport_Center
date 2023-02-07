@@ -1,3 +1,18 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         .-------------.      #
+#                                                         |.-----------.|      #
+#                                                         ||           ||      #
+#                                                         ||  Jkutkut  ||      #
+#    tui.py                                               ||           ||      #
+#                                                         |'-----------'|      #
+#    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
+#                                                        /:::::::::::::::\     #
+#    Created: 2023/02/07 11:52:04 by Jkutkut            /:::===========:::\    #
+#    Updated: 2023/02/07 11:52:06 by Jkutkut            '-----------------'    #
+#                                                                              #
+# **************************************************************************** #
+
 class TUI:
     def __init__(self, options) -> None:
         self.running = True
@@ -8,6 +23,8 @@ class TUI:
         return {"name": name, "ft": ft}
 
     def run(self) -> None:
+        if not self.running:
+            raise Exception("Execution ended")
         while self.running:
             r = self.askOptions(self.options)
             self.options[r]["ft"]()

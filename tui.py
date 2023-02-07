@@ -2,7 +2,10 @@ class TUI:
     def __init__(self, options) -> None:
         self.running = True
         self.options = options
-        self.options.append({"name": "exit", "ft": self.exit})
+        self.options.append(TUI.newOption("exit", self.exit))
+
+    def newOption(name: str, ft) -> dict:
+        return {"name": name, "ft": ft}
 
     def run(self) -> None:
         while self.running:
@@ -16,7 +19,7 @@ class TUI:
 
     def askOptions(self, options) -> int:
         opts = [f"{i + 1}: {options[i]['name']}" for i in range(len(options))]
-        opts = "\n".join(opts) + "\n-> "
+        opts = "\nWhat do you want to do?\n" + "\n".join(opts) + "\n-> "
         while True:
             try:
                 inp = self.ask(opts)
@@ -31,7 +34,7 @@ class TUI:
                 print("Invalid number")
 
     def askOptionNoCase(self, question: str, options: list) -> str:
-        question = question + " [" + "|".join(options) + "]"
+        question = question + " [" + "|".join(options) + "]\n-> "
         options = [o.lower() for o in options]
         while True:
             option = self.ask(question).lower()

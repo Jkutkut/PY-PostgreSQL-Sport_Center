@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 11:52:01 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/07 12:08:06 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ class SportCenterTUI(TUI):
                 TUI.newOption("Show details of client", self.ft_showdetails)
             ]
         )
+        # TODO Create DB
 
     def run(self) -> None:
         TUI.run(self)

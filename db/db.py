@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:05 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 15:26:36 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/07 19:02:23 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,3 +28,16 @@ class DB:
 
     def cursor(self):
         return self.conx.cursor()
+
+    def execute_file(self, cx, filename) -> None:
+        print(f"Executing script: {filename}:")
+        with open(filename) as f:
+            for line in f:
+                line = line
+                if line == "\n" or line[0] == "-":
+                    continue
+                print(".", end="")
+                cx.execute(line)
+        self.conx.commit()
+        print(" Done!")
+

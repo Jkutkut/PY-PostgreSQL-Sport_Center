@@ -9,12 +9,12 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 13:54:07 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/07 16:51:50 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
-from tui import TUI
-from sportCenterDB import SportCenterDB
+from TUI.tui import TUI
+from db.sportCenterDB import SportCenterDB
 
 class SportCenterTUI(TUI):
     def __init__(self):

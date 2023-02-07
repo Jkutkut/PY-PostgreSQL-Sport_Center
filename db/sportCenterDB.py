@@ -9,14 +9,14 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:26 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 16:15:25 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/07 16:28:20 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
 import os
 import dotenv
 
-from db import DB
+from db.db import DB
 
 class SportCenterDB(DB):
     def __init__(self, user: str, passw: str, host: str, port: int):

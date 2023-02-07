@@ -9,12 +9,12 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:05 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 12:07:09 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/07 13:46:00 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
-import pscopg2
-import pscopg2.extras
+import psycopg2
+import psycopg2.extras
 
 class DB:
     def __init__(self, dbname: str, user: str, passw: str, host: str, port: int):

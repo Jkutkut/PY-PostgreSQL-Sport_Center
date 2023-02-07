@@ -9,15 +9,26 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:26 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 12:07:28 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/07 13:51:17 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
-import pscopg2
-import pscopg2.extras
+import os
+import dotenv
 
 from db import DB
 
-class SportCenter(DB):
+class SportCenterDB(DB):
     def __init__(self, user: str, passw: str, host: str, port: int):
-        DB.__init__("postgres", user, passw, host, port)
+        DB.__init__(self, "postgres", user, passw, host, port)
+        print("DB created :D")
+
+    @staticmethod
+    def initfrom_dotenv():
+        dotenv.load_dotenv()
+        return SportCenterDB(
+            os.getenv("DB_USR"),
+            os.getenv("DB_USR_PASSWD"),
+            "localhost",
+            os.getenv("DB_PORT")
+        )

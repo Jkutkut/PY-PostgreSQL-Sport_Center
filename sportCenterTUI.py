@@ -9,11 +9,12 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 12:08:06 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/07 13:54:07 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
 from tui import TUI
+from sportCenterDB import SportCenterDB
 
 class SportCenterTUI(TUI):
     def __init__(self):
@@ -28,11 +29,11 @@ class SportCenterTUI(TUI):
                 TUI.newOption("Show details of client", self.ft_showdetails)
             ]
         )
-        # TODO Create DB
+        self.db = SportCenterDB.initfrom_dotenv()
 
     def run(self) -> None:
         TUI.run(self)
-        # TODO close db
+        self.db.close()
 
     def ft_addclient(self):
         print("TODO")

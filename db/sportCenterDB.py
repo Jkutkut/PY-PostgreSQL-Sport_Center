@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:26 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 17:49:29 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/08 16:53:57 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ import os
 import dotenv
 
 from db.db import DB
+from model.client import Client
 
 class SportCenterDB(DB):
 
@@ -45,7 +46,28 @@ class SportCenterDB(DB):
             ('CLIENTES',)
         )
         db_exists = cx.fetchone()[0]
-        if db_exists:
-            return
-        self.execute_file(cx, self.CONFIG_FILE)
+        if not db_exists:
+            self.execute_file(cx, self.CONFIG_FILE)
         cx.close()
+
+    def addClient(self, c: Client) -> str:
+        print(f"Adding: {c}")
+        cx = self.cursor()
+        query = "INSERT INTO public.CLIENTES VALUES (%s, %s, %s, %s);"
+        try:
+            r = self.get(
+                cursor,
+                query,
+                (
+                    c.nombre,
+                    c.dni,
+                    c.fnac,
+                    c.tel
+                )
+            )
+        except Exception as e:
+            print("Error:")
+            print(e) # TODO
+            return None
+        cx.close()
+        return r

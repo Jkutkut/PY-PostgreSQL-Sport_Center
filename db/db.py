@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:05 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 19:02:23 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/08 15:34:06 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,3 +41,6 @@ class DB:
         self.conx.commit()
         print(" Done!")
 
+    def get(self, cx, query: str, args: tuple) -> str:
+        
+        return None # TODO

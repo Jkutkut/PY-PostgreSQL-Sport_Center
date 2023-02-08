@@ -9,12 +9,13 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 16:51:50 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/08 16:51:46 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
 from TUI.tui import TUI
 from db.sportCenterDB import SportCenterDB
+from model.client import Client
 
 class SportCenterTUI(TUI):
     def __init__(self):
@@ -36,7 +37,15 @@ class SportCenterTUI(TUI):
         self.db.close()
 
     def ft_addclient(self):
-        print("TODO")
+        print("Enter the data of the client:")
+        r = self.db.addClient(
+            Client(
+                self.ask(" - Name: ", minlen = 3),
+                self.askRegex(" - DNI: ", Client.VALID_DNI_REGEX),
+                self.askRegex(" - Birth [yyyy-mm-dd]: ", Client.VALID_BIRTH_REGEX),
+                self.askRegex(" - Phone: ", Client.VALID_PHONE_REGEX)
+            )
+        )
 
     def ft_removeclient(self):
         print("TODO")

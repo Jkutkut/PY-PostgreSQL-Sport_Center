@@ -9,9 +9,11 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:52:04 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 11:52:06 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/08 16:07:30 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
+
+import re
 
 class TUI:
     def __init__(self, options) -> None:
@@ -29,10 +31,17 @@ class TUI:
             r = self.askOptions(self.options)
             self.options[r]["ft"]()
 
-    def ask(self, question: str) -> str:
-        r = input(question).strip()
-        print()
-        return r
+    def ask(self, question: str, minlen = -1, maxlen = -1) -> str:
+        while True:
+            r = input(question).strip()
+            print()
+            if maxlen > 0 and len(r) > maxlen:
+                print("The length of the response is too long. Use {maxlen} chars at max.")
+                continue
+            if minlen > 0 and len(r) < minlen:
+                print("The length of the response is not long enough.")
+                continue
+            return r
 
     def askOptions(self, options) -> int:
         opts = [f"{i + 1}: {options[i]['name']}" for i in range(len(options))]
@@ -59,6 +68,12 @@ class TUI:
                 print("Please, select one of the options")
             else:
                 return option
+    def askRegex(self, question: str, regex: str) -> str:
+        while True:
+            option = self.ask(question)
+            if re.match(regex, option):
+                return option
+            print("The response is invalid")
 
     def exit(self) -> None:
         confirm = self.askOptionNoCase("Are you sure?", ["yes", "no"])

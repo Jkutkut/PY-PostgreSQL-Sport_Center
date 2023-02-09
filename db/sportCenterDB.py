@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:26 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/09 12:59:28 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/09 17:49:55 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,7 +52,6 @@ class SportCenterDB(DB):
         cx.close()
 
     def addClient(self, c: Client) -> str:
-        print(f"Adding: {c}")
         cx = self.cursor()
         query = "INSERT INTO public.\"CLIENTES\" VALUES (%s, %s, %s, %s);"
         try:
@@ -66,11 +65,8 @@ class SportCenterDB(DB):
                     c.phone
                 )
             )
-            print("Client added correctly.")
+            r = "Client added correctly."
         except UniqueViolation as e:
-            print(f"Can not insert the client: {e}")
-        except Exception as e:
-            print(e)
-            print(e.__class__.__name__)
-            e.__str__() # TODO
+            r = "Ups, the DNI is not valid."
         cx.close()
+        return r

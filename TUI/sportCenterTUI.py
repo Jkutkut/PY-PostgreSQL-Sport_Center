@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/09 12:49:50 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/09 18:18:57 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,17 +40,15 @@ class SportCenterTUI(TUI):
     def ft_addclient(self):
         print("Enter the data of the client:")
         r = self.db.addClient(
-            # Client(
-            #     self.ask(" - Name: ", minlen = 3),
-            #     self.askRegex(" - DNI: ", Client.VALID_DNI_REGEX),
-            #     self.askRegex(" - Birth [yyyy-mm-dd]: ", Client.VALID_BIRTH_REGEX),
-            #     self.askRegex(" - Phone: ", Client.VALID_PHONE_REGEX)
-            # )
-            # TODO
-            Client("Pepe", "98765432A", "1990-12-30", "432 432 123")
+            Client(
+                self.ask(" - Name: ", minlen = 3),
+                self.askRegex(" - DNI: ", Client.VALID_DNI_REGEX),
+                self.askRegex(" - Birth [yyyy-mm-dd]: ", Client.VALID_BIRTH_REGEX),
+                self.askRegex(" - Phone: ", Client.VALID_PHONE_REGEX)
+            )
+            # Client("Pepe", "98765432A", "1990-12-30", "432 432 123")
         )
-        if r:
-            print(r)
+        print(r)
 
     def ft_removeclient(self):
         print("TODO")

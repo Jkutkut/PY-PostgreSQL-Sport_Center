@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:05 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/08 15:34:06 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/09 12:56:42 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,6 +41,11 @@ class DB:
         self.conx.commit()
         print(" Done!")
 
-    def get(self, cx, query: str, args: tuple) -> str:
-        
-        return None # TODO
+    def execute(self, cx, query: str, args: tuple):
+        cx.execute(query, args)
+        self.conx.commit()
+
+    def getAll(self, cx, query: str, args: tuple) -> str:
+        self.execute(cx, query, args)
+        return cx.fetchall()
+

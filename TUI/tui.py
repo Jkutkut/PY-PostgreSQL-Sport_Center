@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:52:04 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/08 16:07:30 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/09 12:52:24 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -76,6 +76,7 @@ class TUI:
             print("The response is invalid")
 
     def exit(self) -> None:
-        confirm = self.askOptionNoCase("Are you sure?", ["yes", "no"])
-        if confirm == "yes":
-            self.running = False
+        #confirm = self.askOptionNoCase("Are you sure?", ["yes", "no"])
+        #if confirm == "yes":
+        #    self.running = False
+        self.running = False # TODO

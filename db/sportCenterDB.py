@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:26 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/10 12:42:58 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/10 12:59:21 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,6 +68,8 @@ class SportCenterDB(DB):
             r = "Client added correctly."
         except UniqueViolation as e:
             r = "Ups, the DNI is not valid."
+        except:
+            r = "There was an error with the DB."
         cx.close()
         return r
 
@@ -75,13 +77,16 @@ class SportCenterDB(DB):
         cx = self.cursor()
         query = "DELETE FROM public.\"CLIENTES\" WHERE dni LIKE %s;"
         try:
-            self.execute(
+            r = self.execute(
                 cx,
                 query,
-                (dni, )
+                tuple([dni])
             )
-            r = "Client removed correctly."
-        except UniqueViolation as e:
-            r = "Ups, there're no users with that DNI."
+            if r == 1:
+                r = "Client removed correctly."
+            else:
+                r = "Ups, there's no user with that DNI."
+        except:
+            r = "There was an error with the DB."
         cx.close()
         return r

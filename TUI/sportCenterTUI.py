@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/10 12:17:31 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/10 13:06:54 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,7 +58,8 @@ class SportCenterTUI(TUI):
         print(r)
 
     def ft_showclients(self):
-        print("TODO")
+        r = self.db.getAllClients()
+        print(r)
 
     def ft_registerclientintosport(self):
         print("TODO")

@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:26 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/10 12:59:21 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/10 13:19:45 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -90,3 +90,20 @@ class SportCenterDB(DB):
             r = "There was an error with the DB."
         cx.close()
         return r
+
+    def getAllClients(self) -> str:
+        cx = self.cursor()
+        query = "SELECT * FROM public.\"CLIENTES\";" # TODO remove "'s in table name
+        # TODO realistic data in DB
+        try:
+            sql_result = self.getAll(cx, query)
+            r = "\n".join([Client(*e).__datos__() for e in sql_result])
+            r = "List of all the clients:\n\n" + r
+        except:
+            r = "There was an error with the DB."
+        return r
+
+        # try:
+
+        # except:
+        #     r = "There was an error with the DB."

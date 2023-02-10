@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:26 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/09 17:49:55 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/10 12:42:58 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,5 +68,20 @@ class SportCenterDB(DB):
             r = "Client added correctly."
         except UniqueViolation as e:
             r = "Ups, the DNI is not valid."
+        cx.close()
+        return r
+
+    def removeClient(self, dni: str) -> str:
+        cx = self.cursor()
+        query = "DELETE FROM public.\"CLIENTES\" WHERE dni LIKE %s;"
+        try:
+            self.execute(
+                cx,
+                query,
+                (dni, )
+            )
+            r = "Client removed correctly."
+        except UniqueViolation as e:
+            r = "Ups, there're no users with that DNI."
         cx.close()
         return r

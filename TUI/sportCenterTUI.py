@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/09 18:18:57 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/10 12:17:31 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,11 @@ class SportCenterTUI(TUI):
         print(r)
 
     def ft_removeclient(self):
-        print("TODO")
+        print("Enter the data of the client:")
+        r = self.db.removeClient(
+            self.askRegex(" - DNI: ", Client.VALID_DNI_REGEX)
+        )
+        print(r)
 
     def ft_showclients(self):
         print("TODO")

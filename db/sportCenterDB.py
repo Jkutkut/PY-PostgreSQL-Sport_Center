@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:07:11 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 18:07:27 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 18:32:06 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -79,18 +79,14 @@ class SportCenterDB(DB):
 
     def removeClient(self, dni: str) -> str:
         cx = self.cursor()
-        query = f"DELETE FROM {Client.TABLE_NAME()} WHERE {Client.DNI} LIKE %s;"
+        query = f"DELETE FROM {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
-            # TODO Not working
-            r = self.execute(
+            self.execute(
                 cx,
                 query,
                 tuple([dni])
             )
-            if r == 1:
-                r = "Client removed correctly."
-            else:
-                r = "Ups, there's no user with that DNI."
+            r = "Client removed correctly."
         except:
             r = "There was an error with the DB."
         cx.close()
@@ -117,7 +113,7 @@ class SportCenterDB(DB):
                 return client
         query = f"""
             SELECT d.{Sport.NAME}, d.{Sport.PRICE}, m.{SportEnrollment.PERIOD}
-            FROM {Sport.TABLE_NAME} as d, {SportEnrollment.TABLE_NAME} as m
+            FROM {Sport.TABLE_NAME()} as d, {SportEnrollment.TABLE_NAME()} as m
             WHERE m.{SportEnrollment.CLIENT_ID} = %s and m.{SportEnrollment.SPORT_ID} like d.{Sport.NAME};"""
         try:
             d = self.getAll(cx, query, [dni])
@@ -127,8 +123,7 @@ class SportCenterDB(DB):
                 enrollments = [SportEnrollment(Sport(*e[:-1]), e[-1]) for e in d]
                 r = "List of all the sports enrolled in:\n"
                 r += Client.__deportes__(enrollments)
-        except Exception as e:
-            print(e)
+        except:
             r = "There was an error with the DB."
         cx.close()
         return r
@@ -136,13 +131,13 @@ class SportCenterDB(DB):
     # ********* DB Get *********
 
     def getClient(self, dni: str) -> Client | str | None:
-        query = f"SELECT * from {Client.TABLE_NAME()} WHERE {Client.DNI} like %s;"
+        query = f"SELECT * from {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
             self.execute(self.cg, query, [dni])
             client = self.cg.fetchone()
             if client is not None:
                 client = Client(*client)
-        except Exception as e:
+        except:
             return "There was an error with the DB."
         return client
 
@@ -152,7 +147,3 @@ class SportCenterDB(DB):
             return self.getAll(self.cg, query)
         except:
             return "There was an error with the DB."
-
-# TODO realistic data in DB
-# TODO remove like when not essential
-# TODO use strict mode and variables decoration

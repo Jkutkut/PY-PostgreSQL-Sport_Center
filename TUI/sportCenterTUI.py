@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/10 13:06:54 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 16:19:31 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,28 @@ class SportCenterTUI(TUI):
     def run(self) -> None:
         TUI.run(self)
         self.db.close()
+
+    def askClientDNI(self) -> str | None:
+        dnis = self.db.getClientsDNI()
+        if type(dnis) == str:
+            print(dnis) # print error
+            return None
+        if len(dnis) == 0:
+            print("There are no clients.")
+            return None
+        print("Enter the DNI of the client:")
+        while True:
+            dni = self.askRegex("- DNI: ", Client.VALID_DNI_REGEX)
+            client = self.db.getClient(dni)
+            if not client:
+                print("Client not found.")
+            elif type(client) == str:
+                print(client)
+                return None
+            else:
+                return dni
+
+    # ********* ACTIONS *********
 
     def ft_addclient(self):
         print("Enter the data of the client:")
@@ -68,4 +90,8 @@ class SportCenterTUI(TUI):
         print("TODO")
 
     def ft_showdetails(self):
-        print("TODO")
+        dni = self.askClientDNI()
+        if not dni:
+            return
+        r = self.db.getClientDetails(dni, check_dni = False)
+        print(r)

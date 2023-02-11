@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 12:07:26 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/10 13:19:45 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 16:33:10 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,11 @@ class SportCenterDB(DB):
     def __init__(self, user: str, passw: str, host: str, port: int):
         DB.__init__(self, "postgres", user, passw, host, port)
         self.init_db()
+        self.cg = self.cursor()
+
+    def close(self) -> None:
+        self.cg.close()
+        DB.close(self)
 
     @staticmethod
     def initfrom_dotenv():
@@ -50,6 +55,8 @@ class SportCenterDB(DB):
         if not db_exists:
             self.execute_file(cx, self.CONFIG_FILE)
         cx.close()
+
+    # ********* ACTIONS *********
 
     def addClient(self, c: Client) -> str:
         cx = self.cursor()
@@ -103,7 +110,52 @@ class SportCenterDB(DB):
             r = "There was an error with the DB."
         return r
 
+    def getClientDetails(self, dni: str, check_dni: bool = True) -> str: # TODO
+        cx = self.cursor()
+        if check_dni:
+            client = self.getClient(dni)
+            if not client:
+                return "Invalid DNI. Are you sure it is right?"
+            if type(client) == str:
+                return client
+        query = """
+            SELECT d.nombre, d.precio, m.horario
+            FROM public."DEPORTES" as d, public."MATRICULAS" as m
+            WHERE m.dni = %s and m.deporte like d.nombre;"""
+        try:
+            d = self.getAll(cx, query, [dni])
+            if len(d) == 0:
+                r = "This client is not in any sports at the moment."
+            else:
+                r = "TODO" # TODO parse data
+        except:
+            r = "There was an error with the DB."
+        cx.close()
+        return r
+
+    # ********* DB Get *********
+
+    def getClient(self, dni: str) -> Client | str | None:
+        query = "SELECT * from public.\"CLIENTES\" WHERE DNI like %s;"
+        try:
+            self.execute(self.cg, query, [dni])
+            client = self.cg.fetchone()
+            if client is not None:
+                client = Client(*client)
+        except Exception as e:
+            return "There was an error with the DB."
+        return client
+
+    # def getClientsDNI(self) -> list[str] | str: # TODO used?
+    #     query = "SELECT DNI from public.\"CLIENTES\";"
+    #     try:
+    #         return self.getAll(self.cg, query)
+    #     except:
+    #         return "There was an error with the DB."
+
         # try:
 
         # except:
         #     r = "There was an error with the DB."
+
+

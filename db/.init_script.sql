@@ -15,29 +15,45 @@ CREATE TABLE IF NOT EXISTS public.MATRICULAS (DNI text NOT NULL, DEPORTE TEXT NO
 ALTER TABLE IF EXISTS public.MATRICULAS OWNER to admin;
 
 -- Initial data
-INSERT INTO public.CLIENTES VALUES ('Manolo', '12345678A', '1990-01-01', '666666666');
-INSERT INTO public.CLIENTES VALUES ('Joserra', '87654321B', '2002-02-02', '+34555555555');
-INSERT INTO public.CLIENTES VALUES ('Lali', '12345678C', '1992-03-03', '+34 444444444');
-INSERT INTO public.CLIENTES VALUES ('Edu', '87654321D', '2004-04-04', '+34 333333333');
-INSERT INTO public.CLIENTES VALUES ('Lola', '12345678E', '1994-05-05', '+34 222222222');
-INSERT INTO public.CLIENTES VALUES ('Mini', '87654321F', '2006-06-06', '+34 111111111');
-INSERT INTO public.CLIENTES VALUES ('Paco', '12345678G', '1996-07-07', '+34 000000000');
-INSERT INTO public.CLIENTES VALUES ('Pepe', '87654321H', '2008-08-08', '+34 999999999');
-INSERT INTO public.CLIENTES VALUES ('Carlos', '12345678I', '1998-09-09', '+34 888888888');
 
-INSERT INTO public.DEPORTES VALUES ('tenis', 20);
-INSERT INTO public.DEPORTES VALUES ('natación', 15);
-INSERT INTO public.DEPORTES VALUES ('atletismo', 10);
-INSERT INTO public.DEPORTES VALUES ('baloncesto', 15);
-INSERT INTO public.DEPORTES VALUES ('futbol', 15);
+insert into CLIENTES values ('Steffane Kender', '84459842F', '1953-12-04', '+34 548 001 402');
+insert into CLIENTES values ('Freeland Pietroni', '13921379D', '1955-12-19', '+34 565 312 945');
+insert into CLIENTES values ('Kara Faloon', '18861071F', '1999-11-03', '+34 797 141 001');
+insert into CLIENTES values ('Leora Lethcoe', '78915656J', '1978-05-06', '+34 065 628 214');
+insert into CLIENTES values ('Benjie Skacel', '77298723D', '1976-01-22', '+34 987 347 612');
+insert into CLIENTES values ('Erin Stickland', '56922249W', '2002-10-16', '+34 659 461 360');
+insert into CLIENTES values ('Gerladina MacKaig', '94609651Z', '2000-11-15', '+34 970 874 832');
+insert into CLIENTES values ('Maybelle Blundell', '23213962Q', '1971-08-30', '+34 176 187 931');
+insert into CLIENTES values ('Dalenna Bladge', '60520509A', '1987-06-27', '+34 637 607 060');
+insert into CLIENTES values ('Fielding Reen', '01545165M', '2000-08-01', '+34 897 088 287');
+insert into CLIENTES values ('Grata Tregonna', '46429307N', '1994-12-07', '+34 714 530 078');
+insert into CLIENTES values ('Millie Applegate', '29748914I', '2002-04-19', '+34 408 263 959');
+insert into CLIENTES values ('Wynny Younglove', '92585116W', '1975-03-24', '+34 455 710 229');
+insert into CLIENTES values ('Christan Hanretty', '48994647X', '1946-03-13', '+34 742 695 561');
 
-INSERT INTO public.MATRICULAS VALUES ('12345678A', 'tenis', 'mañana');
-INSERT INTO public.MATRICULAS VALUES ('12345678A', 'natación', 'tarde');
-INSERT INTO public.MATRICULAS VALUES ('87654321B', 'atletismo', 'mañana');
-INSERT INTO public.MATRICULAS VALUES ('87654321B', 'baloncesto', 'tarde');
-INSERT INTO public.MATRICULAS VALUES ('87654321B', 'futbol', 'tarde');
-INSERT INTO public.MATRICULAS VALUES ('12345678C', 'tenis', 'mañana');
-INSERT INTO public.MATRICULAS VALUES ('12345678C', 'natación', 'tarde');
-INSERT INTO public.MATRICULAS VALUES ('87654321D', 'atletismo', 'mañana');
-INSERT INTO public.MATRICULAS VALUES ('87654321F', 'atletismo', 'mañana');
-INSERT INTO public.MATRICULAS VALUES ('12345678G', 'tenis', 'mañana');
+INSERT INTO public.DEPORTES VALUES ('tennis', 20);
+INSERT INTO public.DEPORTES VALUES ('swimming', 15);
+INSERT INTO public.DEPORTES VALUES ('track', 10);
+INSERT INTO public.DEPORTES VALUES ('basket', 15);
+INSERT INTO public.DEPORTES VALUES ('soccer', 15);
+
+INSERT INTO public.MATRICULAS VALUES ('84459842F', 'track', 'morning');
+INSERT INTO public.MATRICULAS VALUES ('84459842F', 'tennis', 'morning');
+INSERT INTO public.MATRICULAS VALUES ('13921379D', 'soccer', 'evening');
+INSERT INTO public.MATRICULAS VALUES ('13921379D', 'swimming', 'evening');
+INSERT INTO public.MATRICULAS VALUES ('18861071F', 'track', 'morning');
+INSERT INTO public.MATRICULAS VALUES ('78915656J', 'basket', 'evening');
+INSERT INTO public.MATRICULAS VALUES ('77298723D', 'soccer', 'morning');
+INSERT INTO public.MATRICULAS VALUES ('56922249W', 'tennis', 'evening');
+INSERT INTO public.MATRICULAS VALUES ('94609651Z', 'swimming', 'morning');
+INSERT INTO public.MATRICULAS VALUES ('23213962Q', 'track', 'evening');
+INSERT INTO public.MATRICULAS VALUES ('60520509A', 'basket', 'morning');
+INSERT INTO public.MATRICULAS VALUES ('01545165M', 'soccer', 'evening');
+INSERT INTO public.MATRICULAS VALUES ('29748914I', 'swimming', 'evening');
+INSERT INTO public.MATRICULAS VALUES ('48994647X', 'track', 'morning');
+
+-- Remove all procedure:
+DROP PROCEDURE IF EXISTS remove_all;
+
+CREATE PROCEDURE public.destroy_db() LANGUAGE 'sql' AS $BODY$ DROP TABLE IF EXISTS public.MATRICULAS; DROP TABLE IF EXISTS public.CLIENTES; DROP TABLE IF EXISTS public.DEPORTES; $BODY$;
+ALTER PROCEDURE public.destroy_db() OWNER TO admin;

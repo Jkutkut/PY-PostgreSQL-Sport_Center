@@ -17,6 +17,10 @@ from model.postgresql_model import PostgreSQLModel
 from model.sport import Sport
 
 class SportEnrollment(PostgreSQLModel):
+    '''
+    Class that represents a sport enrollment.
+    '''
+
     __TABLE_NAME__ = "MATRICULAS"
     CLIENT_ID      = "dni"
     SPORT_ID       = "deporte"

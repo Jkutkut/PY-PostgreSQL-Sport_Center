@@ -16,15 +16,25 @@
 import re
 
 class TUI:
+    '''
+    Base class for all the TUIs.
+    '''
+
     def __init__(self, options: dict) -> None:
         self.running: bool = True
         self.options: dict = options
         self.options.append(TUI.new_option("exit", self.exit))
 
     def new_option(name: str, ft) -> dict:
+        '''
+        Auxiliary function to create a new option for the TUI.
+        '''
         return {"name": name, "ft": ft}
 
     def run(self) -> None:
+        '''
+        Runs the TUI.
+        '''
         if not self.running:
             raise Exception("Execution ended")
         while self.running:
@@ -32,6 +42,9 @@ class TUI:
             self.options[r]["ft"]()
 
     def ask(self, question: str, minlen: int = -1, maxlen: int = -1) -> str:
+        '''
+        Asks a question to the user.
+        '''
         while True:
             r = input(question).strip()
             print()
@@ -44,6 +57,9 @@ class TUI:
             return r
 
     def ask_options(self, options: dict) -> int:
+        '''
+        Asks the user to choose an option from a list of options.
+        '''
         opts: list[str] = [f"{i + 1}: {options[i]['name']}" for i in range(len(options))]
         opts: str = "\nWhat do you want to do?\n" + "\n".join(opts) + "\n-> "
         while True:
@@ -60,6 +76,9 @@ class TUI:
                 print("Invalid number")
 
     def ask_option_no_case(self, question: str, options: list[str]) -> str:
+        '''
+        Asks the user to choose an option from a list of options, ignoring the case.
+        '''
         question: str = question + " [" + "|".join(options) + "]\n-> "
         options: list[str] = [o.lower() for o in options]
         while True:
@@ -70,6 +89,9 @@ class TUI:
             print("Please, select one of the options. Avaliable:", ", ".join(options))
 
     def ask_regex(self, question: str, regex: str) -> str:
+        '''
+        Asks the user to input a string that matches a regex.
+        '''
         while True:
             option: str = self.ask(question)
             if re.match(regex, option):
@@ -77,6 +99,9 @@ class TUI:
             print("The response is invalid")
 
     def exit(self) -> None:
+        '''
+        Exits the TUI.
+        '''
         confirm: str = self.ask_option_no_case("Are you sure?", ["yes", "no"])
         if confirm == "yes":
             self.running = False

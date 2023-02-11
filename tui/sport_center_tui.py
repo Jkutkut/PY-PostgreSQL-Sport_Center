@@ -18,6 +18,10 @@ from db.sport_center_db import SportCenterDB
 from model.client import Client
 
 class SportCenterTUI(TUI):
+    '''
+    Class that represents the TUI of the Sport Center app.
+    '''
+
     def __init__(self) -> None:
         TUI.__init__(
             self,
@@ -38,6 +42,9 @@ class SportCenterTUI(TUI):
         self.db.close()
 
     def ask_client_dni(self) -> str | None:
+        '''
+        Asks the user to enter the DNI of a client.
+        '''
         dnis: list[str] | str = self.db.get_clients_dni()
         if type(dnis) == str:
             print(dnis)
@@ -53,6 +60,9 @@ class SportCenterTUI(TUI):
             print("Client not found.")
 
     def ask_sport(self) -> str | None:
+        '''
+        Asks the user to enter the name of a sport.
+        '''
         sports: list[str] | str = self.db.get_sports_names()
         if type(sports) == str:
             print(sports)
@@ -70,6 +80,9 @@ class SportCenterTUI(TUI):
     # ********* ACTIONS *********
 
     def ft_add_client(self) -> None:
+        '''
+        Option to add a client.
+        '''
         print("Enter the data of the client:")
         r: str = self.db.add_client(
             Client(
@@ -82,6 +95,9 @@ class SportCenterTUI(TUI):
         print(r)
 
     def ft_remove_client(self) -> None:
+        '''
+        Option to remove a client.
+        '''
         print("Enter the data of the client:")
         dni: str | None = self.ask_client_dni()
         if not dni:
@@ -90,10 +106,16 @@ class SportCenterTUI(TUI):
         print(r)
 
     def ft_show_clients(self) -> None:
+        '''
+        Option to show all clients.
+        '''
         r: str = self.db.get_all_clients()
         print(r)
 
     def ft_register_client_into_sport(self) -> None:
+        '''
+        Option to enroll a client into a sport.
+        '''
         dni: str | None = self.ask_client_dni()
         if not dni:
             return
@@ -109,6 +131,9 @@ class SportCenterTUI(TUI):
         print(r)
 
     def ft_remove_client_from_sport(self) -> None:
+        '''
+        Option to remove a client from a sport.
+        '''
         dni: str | None = self.ask_client_dni()
         if not dni:
             return
@@ -121,6 +146,9 @@ class SportCenterTUI(TUI):
         print(r)
 
     def ft_show_details(self) -> None:
+        '''
+        Option to show the details of a client.
+        '''
         dni: str | None = self.ask_client_dni()
         if not dni:
             return

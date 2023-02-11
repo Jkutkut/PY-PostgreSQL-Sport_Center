@@ -23,6 +23,9 @@ from model.sport import Sport
 from model.sport_enrollment import SportEnrollment
 
 class SportCenterDB(DB):
+    '''
+    Class that handles the connection to the DB of the SportCenter app.
+    '''
 
     CONFIG_FILE = "db/.init_script.sql"
 
@@ -42,7 +45,10 @@ class SportCenterDB(DB):
         DB.close(self)
 
     @classmethod
-    def init_from_dotenv(cls) -> any:
+    def init_from_dotenv(cls) -> "SportCenterDB":
+        '''
+        Creates a SportCenterDB object with the data from the .env file.
+        '''
         dotenv.load_dotenv()
         return SportCenterDB(
             os.getenv("DB_USR"),
@@ -52,6 +58,9 @@ class SportCenterDB(DB):
         )
 
     def init_db(self) -> None:
+        '''
+        Creates the tables of the DB if they don't exist.
+        '''
         self.cursor.execute(
             """SELECT EXISTS(
                 SELECT * FROM information_schema.tables where lower(table_name) = lower(%s)
@@ -65,6 +74,9 @@ class SportCenterDB(DB):
     # ********* ACTIONS *********
 
     def add_client(self, c: Client) -> str:
+        '''
+        Adds a client to the DB.
+        '''
         query: str = f"INSERT INTO {Client.TABLE_NAME()} VALUES (%s, %s, %s, %s);"
         try:
             self.execute(
@@ -80,6 +92,9 @@ class SportCenterDB(DB):
         return r
 
     def remove_client(self, dni: str) -> str:
+        '''
+        Removes a client from the DB.
+        '''
         query: str = f"DELETE FROM {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
             self.execute(
@@ -93,6 +108,9 @@ class SportCenterDB(DB):
         return r
 
     def get_all_clients(self) -> str:
+        '''
+        Returns a string with the data of all the clients.
+        '''
         query: str = f"SELECT * FROM {Client.TABLE_NAME()};"
         try:
             sql_result = self.get_all(self.cursor, query)
@@ -103,6 +121,9 @@ class SportCenterDB(DB):
         return r
 
     def add_enrollment(self, dni: str, sport: str, schedule: str, check_args: bool = True) -> str:
+        '''
+        Adds an enrollment to the DB.
+        '''
         if check_args:
             client: Client | str | None = self.get_client(dni)
             if not client:
@@ -125,6 +146,9 @@ class SportCenterDB(DB):
         return r
 
     def remove_enrollment(self, dni: str, sport: str) -> str:
+        '''
+        Removes an enrollment from the DB.
+        '''
         query: str = f"""
             DELETE FROM {SportEnrollment.TABLE_NAME()}
             WHERE
@@ -143,6 +167,9 @@ class SportCenterDB(DB):
 
 
     def get_client_details(self, dni: str, check_dni: bool = True) -> str:
+        '''
+        Returns a string with the details of a client.
+        '''
         if check_dni:
             client: Client | str | None = self.get_client(dni)
             if not client:
@@ -168,6 +195,9 @@ class SportCenterDB(DB):
     # ********* DB Get *********
 
     def get_client(self, dni: str) -> Client | str | None:
+        '''
+        Returns a client object if it exists, None if it doesn't and a string if there is an error.
+        '''
         query: str = f"SELECT * from {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
             self.execute(self.cursor, query, [dni], commit = False)
@@ -179,6 +209,9 @@ class SportCenterDB(DB):
             return self.DB_ERROR_MSG
 
     def get_clients_dni(self) -> list[str] | str:
+        '''
+        Returns a list with all the clients DNI or a string if there is an error.
+        '''
         query: str = f"SELECT {Client.DNI} from {Client.TABLE_NAME()};"
         try:
             return [e[0] for e in self.get_all(self.cursor, query)]
@@ -186,6 +219,9 @@ class SportCenterDB(DB):
             return self.DB_ERROR_MSG
 
     def get_client_sports(self, dni: str) -> list[str] | str:
+        '''
+        Returns a list with all the sports the client is enrolled in or a string if there is an error.
+        '''
         query = f"""
             SELECT {SportEnrollment.SPORT_ID}
             FROM {SportEnrollment.TABLE_NAME()}
@@ -196,6 +232,9 @@ class SportCenterDB(DB):
             return self.DB_ERROR_MSG
 
     def get_sport(self, sport: str) -> Sport | str | None:
+        '''
+        Returns a sport object if it exists, None if it doesn't and a string if there is an error.
+        '''
         query: str = f"SELECT * from {Sport.TABLE_NAME()} WHERE {Sport.NAME} = %s;"
         try:
             self.execute(self.cursor, query, [sport])
@@ -207,6 +246,9 @@ class SportCenterDB(DB):
             return self.DB_ERROR_MSG
 
     def get_sports_names(self) -> list[str] | str:
+        '''
+        Returns a list with all the sports names or a string if there is an error.
+        '''
         query: str = f"SELECT {Sport.NAME} from {Sport.TABLE_NAME()};"
         try:
             return [e[0] for e in self.get_all(self.cursor, query)]

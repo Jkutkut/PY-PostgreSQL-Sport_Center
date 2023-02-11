@@ -16,6 +16,10 @@
 from model.postgresql_model import PostgreSQLModel
 
 class Sport(PostgreSQLModel):
+    '''
+    Class that represents a sport.
+    '''
+
     __TABLE_NAME__ = "DEPORTES"
     NAME           = "nombre"
     PRICE          = "precio"

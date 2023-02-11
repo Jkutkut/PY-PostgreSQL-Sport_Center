@@ -53,7 +53,7 @@ INSERT INTO public.MATRICULAS VALUES ('29748914I', 'swimming', 'evening');
 INSERT INTO public.MATRICULAS VALUES ('48994647X', 'track', 'morning');
 
 -- Remove all procedure:
-DROP PROCEDURE IF EXISTS remove_all;
+DROP PROCEDURE IF EXISTS destroy_db;
 
 CREATE PROCEDURE public.destroy_db() LANGUAGE 'sql' AS $BODY$ DROP TABLE IF EXISTS public.MATRICULAS; DROP TABLE IF EXISTS public.CLIENTES; DROP TABLE IF EXISTS public.DEPORTES; $BODY$;
 ALTER PROCEDURE public.destroy_db() OWNER TO admin;

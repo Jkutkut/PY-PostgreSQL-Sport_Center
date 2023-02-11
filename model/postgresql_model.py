@@ -14,6 +14,13 @@
 # **************************************************************************** #
 
 class PostgreSQLModel:
+    '''
+    Base class for all the models that will be stored in a PostgreSQL DB.
+    '''
+
     @classmethod
     def TABLE_NAME(cls) -> str:
+        '''
+        Returns the name of the table that will be used to store the model.
+        '''
         return f"public.{cls.__TABLE_NAME__}"

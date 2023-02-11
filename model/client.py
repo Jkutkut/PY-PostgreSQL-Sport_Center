@@ -17,6 +17,10 @@ from model.postgresql_model import PostgreSQLModel
 from model.sport_enrollment import SportEnrollment
 
 class Client(PostgreSQLModel):
+    '''
+    Class that represents a client of the SportCenter app.
+    '''
+
     __TABLE_NAME__ = "CLIENTES"
     NAME           = "nombre"
     DNI            = "dni"
@@ -36,6 +40,9 @@ class Client(PostgreSQLModel):
 
     @classmethod
     def __deportes__(cls, sports: list[SportEnrollment]) -> str:
+        '''
+        Returns a string with the list of sports enrolled by the client.
+        '''
         if len(sports) == 0:
             return "No sports enrolled."
         r: str = ""
@@ -44,9 +51,13 @@ class Client(PostgreSQLModel):
         return r
 
     def __datos__(self) -> str:
+        '''
+        Returns a string with the client's data.
+        '''
         return str(self)
 
     def __str__(self) -> str:
+        '''
+        Returns a string with the client's data.
+        '''
         return f"{self.__class__.__name__} {self.name}\n - DNI: {self.dni}\n - Birth: {self.birth}\n - Phone: {self.phone}\n"
-
-

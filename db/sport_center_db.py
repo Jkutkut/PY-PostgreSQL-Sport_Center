@@ -4,12 +4,12 @@
 #                                                         |.-----------.|      #
 #                                                         ||           ||      #
 #                                                         ||  Jkutkut  ||      #
-#    sportCenterDB.py                                     ||           ||      #
+#    sport_center_db.py                                   ||           ||      #
 #                                                         |'-----------'|      #
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:07:11 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 19:15:22 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 20:02:15 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -101,7 +101,34 @@ class SportCenterDB(DB):
             r = "List of all the clients:\n\n" + r
         except:
             r = "There was an error with the DB."
+        cx.close()
         return r
+
+    def addEnrollment(self, dni: str, sport: str, schedule: str, check_arg: bool = True) -> str:
+        cx = self.cursor()
+        print(dni, sport, schedule, check_arg)
+        if check_arg:
+            client = self.getClient(dni)
+            if not client:
+                return "Invalid DNI. Are you sure it is right?"
+            elif type(client) == str:
+                return client
+            sport_obj = self.getSport(sport)
+            if not sport:
+                return "Invalid sport. Are you sure it is right?"
+            elif type(sport_obj) == str:
+                return sport_obj
+        query = f"INSERT INTO {SportEnrollment.TABLE_NAME()} VALUES (%s, %s, %s);"
+        try:
+            self.execute(cx, query, (dni, sport, schedule))
+            r = "Enrollment added successfully"
+        except Exception as e:
+            print(e)
+            r = "There was an error with the DB" # TODO refactor into constant
+        cx.close()
+        return r
+
+
 
     def getClientDetails(self, dni: str, check_dni: bool = True) -> str:
         cx = self.cursor()
@@ -109,7 +136,7 @@ class SportCenterDB(DB):
             client = self.getClient(dni)
             if not client:
                 return "Invalid DNI. Are you sure it is right?"
-            if type(client) == str:
+            elif type(client) == str:
                 return client
         query = f"""
             SELECT d.{Sport.NAME}, d.{Sport.PRICE}, m.{SportEnrollment.PERIOD}
@@ -137,13 +164,37 @@ class SportCenterDB(DB):
             client = self.cg.fetchone()
             if client is not None:
                 client = Client(*client)
+            return client
         except:
             return "There was an error with the DB."
-        return client
 
     def getClientsDNI(self) -> list[str] | str:
-        query = f"SELECT DNI from {Client.TABLE_NAME()};"
+        query = f"SELECT {Client.DNI} from {Client.TABLE_NAME()};"
         try:
-            return self.getAll(self.cg, query)
+            return [e[0] for e in self.getAll(self.cg, query)]
         except:
             return "There was an error with the DB."
+
+    def getSport(self, sport: str) -> Sport | str | None:
+        query = f"SELECT * from {Sport.TABLE_NAME()} WHERE {Sport.NAME} = %s;"
+        try:
+            self.execute(self.cg, query, [sport])
+            sport_obj = self.cg.fetchone()
+            if sport_obj is not None:
+                sport_obj = Sport(*sport_obj)
+            print(sport_obj) # TODO 
+            return sport_obj
+        except:
+            return "There was an error with the DB."
+
+    def getSportsNames(self) -> list[str] | str:
+        query = f"SELECT {Sport.NAME} from {Sport.TABLE_NAME()};"
+        try:
+            return [e[0] for e in self.getAll(self.cg, query)]
+        except:
+            return "There was an error with the DB."
+
+# TODO syntax check
+# TODO Change tui text' options
+# TODO single cursor
+# TODO case sensitivity

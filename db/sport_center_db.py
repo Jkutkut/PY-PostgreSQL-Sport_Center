@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:07:11 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 20:18:42 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 22:05:03 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -102,9 +102,8 @@ class SportCenterDB(DB):
             r = "There was an error with the DB."
         return r
 
-    def addEnrollment(self, dni: str, sport: str, schedule: str, check_arg: bool = True) -> str:
-        print(dni, sport, schedule, check_arg)
-        if check_arg:
+    def addEnrollment(self, dni: str, sport: str, schedule: str, check_args: bool = True) -> str:
+        if check_args:
             client = self.getClient(dni)
             if not client:
                 return "Invalid DNI. Are you sure it is right?"
@@ -118,12 +117,29 @@ class SportCenterDB(DB):
         query = f"INSERT INTO {SportEnrollment.TABLE_NAME()} VALUES (%s, %s, %s);"
         try:
             self.execute(self.cursor, query, (dni, sport, schedule))
-            r = "Enrollment added successfully"
-        except Exception as e:
-            print(e)
+            r = "Enrollment added successfully."
+        except UniqueViolation as e:
+            r = "This client is already enrolled."
+        except:
             r = "There was an error with the DB" # TODO refactor into constant
         return r
 
+    def removeEnrollment(self, dni: str, sport: str) -> str:
+        query = f"""
+            DELETE FROM {SportEnrollment.TABLE_NAME()}
+            WHERE
+                {SportEnrollment.CLIENT_ID} = %s and
+                {SportEnrollment.SPORT_ID} = %s;"""
+        try:
+            self.execute(
+                self.cursor,
+                query,
+                (dni, sport)
+            )
+            r = "Enrollment removed"
+        except:
+            r = "There was an error with the DB"
+        return r
 
 
     def getClientDetails(self, dni: str, check_dni: bool = True) -> str:
@@ -169,6 +185,17 @@ class SportCenterDB(DB):
         except:
             return "There was an error with the DB."
 
+    def getClientSports(self, dni: str) -> list[str] | str:
+        query = f"""
+            SELECT {SportEnrollment.SPORT_ID}
+            FROM {SportEnrollment.TABLE_NAME()}
+            WHERE {SportEnrollment.CLIENT_ID} = %s;"""
+        try:
+            return [s[0] for s in self.getAll(self.cursor, query, [dni])]
+        except Exception as e:
+            print(e)
+            return "There was an error with the DB."
+
     def getSport(self, sport: str) -> Sport | str | None:
         query = f"SELECT * from {Sport.TABLE_NAME()} WHERE {Sport.NAME} = %s;"
         try:
@@ -190,3 +217,4 @@ class SportCenterDB(DB):
 # TODO syntax check
 # TODO Change tui text' options
 # TODO case sensitivity
+# TODO commit only if DB changed

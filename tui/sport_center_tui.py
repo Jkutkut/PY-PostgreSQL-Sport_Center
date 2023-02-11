@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 20:17:11 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 20:48:17 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -109,7 +109,16 @@ class SportCenterTUI(TUI):
         print(r)
 
     def ft_removeclientfromsport(self):
-        print("TODO")
+        dni = self.askClientDNI()
+        if not dni:
+            return
+        sports = self.db.getClientSports(dni)
+        if type(sports) == str:
+            print(sports)
+            return
+        sport = self.askOptionNoCase("- Select the sport: ", sports)
+        r = self.db.removeEnrollment(dni, sport)
+        print(r)
 
     def ft_showdetails(self):
         dni = self.askClientDNI()

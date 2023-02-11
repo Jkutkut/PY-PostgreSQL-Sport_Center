@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:52:04 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/09 12:52:24 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 20:25:22 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,10 +64,11 @@ class TUI:
         options = [o.lower() for o in options]
         while True:
             option = self.ask(question).lower()
-            if not option in options:
-                print("Please, select one of the options")
-            else:
-                return option
+            for o in options:
+                if o.lower() == option:
+                    return o
+            print("Please, select one of the options. Avaliable:", ", ".join(options))
+
     def askRegex(self, question: str, regex: str) -> str:
         while True:
             option = self.ask(question)

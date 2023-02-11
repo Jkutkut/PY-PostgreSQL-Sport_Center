@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:07:11 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 23:20:25 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 23:29:47 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -170,7 +170,7 @@ class SportCenterDB(DB):
     def get_client(self, dni: str) -> Client | str | None:
         query: str = f"SELECT * from {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
-            self.execute(self.cursor, query, [dni])
+            self.execute(self.cursor, query, [dni], commit = False)
             client: tuple[any] = self.cursor.fetchone()
             if client is not None:
                 client: Client = Client(*client)
@@ -214,5 +214,4 @@ class SportCenterDB(DB):
             return "There was an error with the DB."
 
 # TODO case sensitivity
-# TODO commit only if DB changed
 # TODO refactor strings into constants

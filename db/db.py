@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:08:45 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 22:55:16 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 23:28:59 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,11 +41,12 @@ class DB:
         self.conx.commit()
         print(" Done!")
 
-    def execute(self, cx: connection, query: str, args: tuple = tuple()) -> None:
+    def execute(self, cx: connection, query: str, args: tuple = tuple(), commit: bool = True) -> None:
         cx.execute(query, args)
-        self.conx.commit()
+        if commit:
+            self.conx.commit()
 
     def get_all(self, cx: connection, query: str, args: tuple = tuple()) -> tuple[any]:
-        self.execute(cx, query, args)
+        self.execute(cx, query, args, commit = False)
         return cx.fetchall()
 

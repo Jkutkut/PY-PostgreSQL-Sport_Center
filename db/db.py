@@ -1,15 +1,15 @@
 # **************************************************************************** #
 #                                                                              #
-#                                                         .-------------.      #
-#                                                         |.-----------.|      #
-#                                                         ||           ||      #
-#                                                         ||  Jkutkut  ||      #
-#    db.py                                                ||           ||      #
-#                                                         |'-----------'|      #
-#    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
-#                                                        /:::::::::::::::\     #
-#    Created: 2023/02/07 12:07:05 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 14:19:38 by Jkutkut            '-----------------'    #
+#                                                         :::      ::::::::    #
+#    db.py                                              :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jre-gonz <jre-gonz@student.42madrid.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: Invalid date        by                   #+#    #+#              #
+#    Updated: 2023/02/11 17:39:04 by jre-gonz         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,11 +41,12 @@ class DB:
         self.conx.commit()
         print(" Done!")
 
-    def execute(self, cx, query: str, args: tuple = tuple()):
-        cx.execute(query, args)
+    def execute(self, cx, query: str, args: tuple = tuple()) -> int | None:
+        r = cx.execute(query, args)
         self.conx.commit()
+        return r
 
-    def getAll(self, cx, query: str, args: tuple = tuple()) -> str:
+    def getAll(self, cx, query: str, args: tuple = tuple()) -> tuple[any]:
         self.execute(cx, query, args)
         return cx.fetchall()
 

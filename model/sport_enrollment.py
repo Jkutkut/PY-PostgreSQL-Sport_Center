@@ -1,10 +1,11 @@
+from model.postgresql_model import PostgreSQLModel
 from model.sport import Sport
 
-class SportEnrollment:
-    TABLE_NAME = "MATRICULAS"
-    CLIENT_ID  = "dni"
-    SPORT_ID   = "deporte"
-    PERIOD     = "horario"
+class SportEnrollment(PostgreSQLModel):
+    __TABLE_NAME__ = "MATRICULAS"
+    CLIENT_ID      = "dni"
+    SPORT_ID       = "deporte"
+    PERIOD         = "horario"
 
     def __init__(self, sport: Sport, period: str) -> None:
         self.sport = sport

@@ -6,7 +6,7 @@
 #    By: jre-gonz <jre-gonz@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: Invalid date        by                   #+#    #+#              #
-#    Updated: 2023/02/11 17:17:44 by jre-gonz         ###   ########.fr        #
+#    Updated: 2023/02/11 17:49:29 by jre-gonz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,8 +35,8 @@ class SportCenterDB(DB):
         self.cg.close()
         DB.close(self)
 
-    @staticmethod
-    def initfrom_dotenv():
+    @classmethod
+    def init_from_dotenv(cls):
         dotenv.load_dotenv()
         return SportCenterDB(
             os.getenv("DB_USR"),
@@ -49,9 +49,9 @@ class SportCenterDB(DB):
         cx = self.cursor()
         cx.execute(
             """SELECT EXISTS(
-                SELECT * FROM information_schema.tables where table_name=%s
+                SELECT * FROM information_schema.tables where lower(table_name) = lower(%s)
             )""",
-            ('CLIENTES',)
+            [Client.__TABLE_NAME__]
         )
         db_exists = cx.fetchone()[0]
         if not db_exists:
@@ -62,17 +62,12 @@ class SportCenterDB(DB):
 
     def addClient(self, c: Client) -> str:
         cx = self.cursor()
-        query = "INSERT INTO public.\"CLIENTES\" VALUES (%s, %s, %s, %s);"
+        query = f"INSERT INTO {Client.TABLE_NAME()} VALUES (%s, %s, %s, %s);"
         try:
             self.execute(
                 cx,
                 query,
-                (
-                    c.name,
-                    c.dni,
-                    c.birth,
-                    c.phone
-                )
+                (c.name, c.dni, c.birth, c.phone)
             )
             r = "Client added correctly."
         except UniqueViolation as e:
@@ -84,8 +79,9 @@ class SportCenterDB(DB):
 
     def removeClient(self, dni: str) -> str:
         cx = self.cursor()
-        query = "DELETE FROM public.\"CLIENTES\" WHERE dni LIKE %s;"
+        query = f"DELETE FROM {Client.TABLE_NAME()} WHERE {Client.DNI} LIKE %s;"
         try:
+            # TODO Not working
             r = self.execute(
                 cx,
                 query,
@@ -102,8 +98,7 @@ class SportCenterDB(DB):
 
     def getAllClients(self) -> str:
         cx = self.cursor()
-        query = "SELECT * FROM public.\"CLIENTES\";" # TODO remove "'s in table name
-        # TODO realistic data in DB
+        query = f"SELECT * FROM {Client.TABLE_NAME()};"
         try:
             sql_result = self.getAll(cx, query)
             r = "\n".join([Client(*e).__datos__() for e in sql_result])
@@ -112,7 +107,7 @@ class SportCenterDB(DB):
             r = "There was an error with the DB."
         return r
 
-    def getClientDetails(self, dni: str, check_dni: bool = True) -> str: # TODO
+    def getClientDetails(self, dni: str, check_dni: bool = True) -> str:
         cx = self.cursor()
         if check_dni:
             client = self.getClient(dni)
@@ -120,10 +115,10 @@ class SportCenterDB(DB):
                 return "Invalid DNI. Are you sure it is right?"
             if type(client) == str:
                 return client
-        query = """
-            SELECT d.nombre, d.precio, m.horario
-            FROM public."DEPORTES" as d, public."MATRICULAS" as m
-            WHERE m.dni = %s and m.deporte like d.nombre;"""
+        query = f"""
+            SELECT d.{Sport.NAME}, d.{Sport.PRICE}, m.{SportEnrollment.PERIOD}
+            FROM {Sport.TABLE_NAME} as d, {SportEnrollment.TABLE_NAME} as m
+            WHERE m.{SportEnrollment.CLIENT_ID} = %s and m.{SportEnrollment.SPORT_ID} like d.{Sport.NAME};"""
         try:
             d = self.getAll(cx, query, [dni])
             if len(d) == 0:
@@ -141,7 +136,7 @@ class SportCenterDB(DB):
     # ********* DB Get *********
 
     def getClient(self, dni: str) -> Client | str | None:
-        query = "SELECT * from public.\"CLIENTES\" WHERE DNI like %s;"
+        query = f"SELECT * from {Client.TABLE_NAME()} WHERE {Client.DNI} like %s;"
         try:
             self.execute(self.cg, query, [dni])
             client = self.cg.fetchone()
@@ -152,10 +147,12 @@ class SportCenterDB(DB):
         return client
 
     def getClientsDNI(self) -> list[str] | str:
-        query = "SELECT DNI from public.\"CLIENTES\";"
+        query = f"SELECT DNI from {Client.TABLE_NAME()};"
         try:
             return self.getAll(self.cg, query)
         except:
             return "There was an error with the DB."
 
-
+# TODO realistic data in DB
+# TODO remove like when not essential
+# TODO use strict mode and variables decoration

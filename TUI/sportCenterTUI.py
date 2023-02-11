@@ -30,7 +30,7 @@ class SportCenterTUI(TUI):
                 TUI.newOption("Show details of client", self.ft_showdetails)
             ]
         )
-        self.db = SportCenterDB.initfrom_dotenv()
+        self.db = SportCenterDB.init_from_dotenv()
         print("App ready")
 
     def run(self) -> None:

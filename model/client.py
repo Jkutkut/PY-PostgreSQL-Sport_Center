@@ -1,11 +1,12 @@
+from model.postgresql_model import PostgreSQLModel
 from model.sport_enrollment import SportEnrollment
 
-class Client:
-    TABLE_NAME = "CLIENTES"
-    NAME       = "nombre"
-    DNI        = "dni"
-    BIRTH      = "fnac"
-    PHONE      = "telefono"
+class Client(PostgreSQLModel):
+    __TABLE_NAME__ = "CLIENTES"
+    NAME           = "nombre"
+    DNI            = "dni"
+    BIRTH          = "fnac"
+    PHONE          = "telefono"
 
     # https://github.com/jkutkut/regex
     VALID_DNI_REGEX = r'^[0-9]{8}[A-Z]$'
@@ -18,8 +19,8 @@ class Client:
         self.birth = birth
         self.phone = phone
 
-    @staticmethod
-    def __deportes__(sports: list[SportEnrollment]) -> str:
+    @classmethod
+    def __deportes__(cls, sports: list[SportEnrollment]) -> str:
         if len(sports) == 0:
             return "No sports enrolled."
         r: str = ""

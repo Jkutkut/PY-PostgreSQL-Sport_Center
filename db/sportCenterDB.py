@@ -1,15 +1,15 @@
 # **************************************************************************** #
 #                                                                              #
-#                                                         .-------------.      #
-#                                                         |.-----------.|      #
-#                                                         ||           ||      #
-#                                                         ||  Jkutkut  ||      #
-#    sportCenterDB.py                                     ||           ||      #
-#                                                         |'-----------'|      #
-#    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
-#                                                        /:::::::::::::::\     #
-#    Created: 2023/02/07 12:07:26 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 16:33:10 by Jkutkut            '-----------------'    #
+#                                                         :::      ::::::::    #
+#    sportCenterDB.py                                   :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jre-gonz <jre-gonz@student.42madrid.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: Invalid date        by                   #+#    #+#              #
+#    Updated: 2023/02/11 17:17:44 by jre-gonz         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,8 @@ from psycopg2.errors import UniqueViolation
 
 from db.db import DB
 from model.client import Client
+from model.sport import Sport
+from model.sport_enrollment import SportEnrollment
 
 class SportCenterDB(DB):
 
@@ -127,8 +129,11 @@ class SportCenterDB(DB):
             if len(d) == 0:
                 r = "This client is not in any sports at the moment."
             else:
-                r = "TODO" # TODO parse data
-        except:
+                enrollments = [SportEnrollment(Sport(*e[:-1]), e[-1]) for e in d]
+                r = "List of all the sports enrolled in:\n"
+                r += Client.__deportes__(enrollments)
+        except Exception as e:
+            print(e)
             r = "There was an error with the DB."
         cx.close()
         return r
@@ -146,16 +151,11 @@ class SportCenterDB(DB):
             return "There was an error with the DB."
         return client
 
-    # def getClientsDNI(self) -> list[str] | str: # TODO used?
-    #     query = "SELECT DNI from public.\"CLIENTES\";"
-    #     try:
-    #         return self.getAll(self.cg, query)
-    #     except:
-    #         return "There was an error with the DB."
-
-        # try:
-
-        # except:
-        #     r = "There was an error with the DB."
+    def getClientsDNI(self) -> list[str] | str:
+        query = "SELECT DNI from public.\"CLIENTES\";"
+        try:
+            return self.getAll(self.cg, query)
+        except:
+            return "There was an error with the DB."
 
 

@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 22:38:43 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 23:41:07 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ class SportCenterTUI(TUI):
             return None
         print("Enter the DNI of the client:")
         while True:
-            dni: str = self.ask_regex("- DNI: ", Client.VALID_DNI_REGEX)
+            dni: str = self.ask_regex("- DNI: ", Client.VALID_DNI_REGEX).upper()
             if dni in dnis:
                 return dni
             print("Client not found.")
@@ -62,7 +62,7 @@ class SportCenterTUI(TUI):
             return None
         print("Enter the sport:")
         while True:
-            sport: str = self.ask("- Sport: ")
+            sport: str = self.ask("- Sport: ").lower()
             if sport in sports:
                 return sport
             print("Sport invalid.\nValid sports:", ", ".join(sports))

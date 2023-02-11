@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:07:11 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 23:29:47 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 23:41:27 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -213,5 +213,4 @@ class SportCenterDB(DB):
         except:
             return "There was an error with the DB."
 
-# TODO case sensitivity
 # TODO refactor strings into constants

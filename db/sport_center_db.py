@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:07:11 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 22:21:18 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 23:20:25 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ class SportCenterDB(DB):
 
     CONFIG_FILE = "db/.init_script.sql"
 
-    def __init__(self, user: str, passw: str, host: str, port: int):
+    def __init__(self, user: str, passw: str, host: str, port: int) -> None:
         DB.__init__(self, "postgres", user, passw, host, port)
         self.cursor = None
         try:
@@ -42,7 +42,7 @@ class SportCenterDB(DB):
         DB.close(self)
 
     @classmethod
-    def init_from_dotenv(cls):
+    def init_from_dotenv(cls) -> any:
         dotenv.load_dotenv()
         return SportCenterDB(
             os.getenv("DB_USR"),
@@ -58,14 +58,14 @@ class SportCenterDB(DB):
             )""",
             [Client.__TABLE_NAME__]
         )
-        db_exists = self.cursor.fetchone()[0]
+        db_exists: bool = self.cursor.fetchone()[0]
         if not db_exists:
             self.execute_file(self.cursor, self.CONFIG_FILE)
 
     # ********* ACTIONS *********
 
     def add_client(self, c: Client) -> str:
-        query = f"INSERT INTO {Client.TABLE_NAME()} VALUES (%s, %s, %s, %s);"
+        query: str = f"INSERT INTO {Client.TABLE_NAME()} VALUES (%s, %s, %s, %s);"
         try:
             self.execute(
                 self.cursor,
@@ -80,7 +80,7 @@ class SportCenterDB(DB):
         return r
 
     def remove_client(self, dni: str) -> str:
-        query = f"DELETE FROM {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
+        query: str = f"DELETE FROM {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
             self.execute(
                 self.cursor,
@@ -93,7 +93,7 @@ class SportCenterDB(DB):
         return r
 
     def get_all_clients(self) -> str:
-        query = f"SELECT * FROM {Client.TABLE_NAME()};"
+        query: str = f"SELECT * FROM {Client.TABLE_NAME()};"
         try:
             sql_result = self.get_all(self.cursor, query)
             r = "\n".join([Client(*e).__datos__() for e in sql_result])
@@ -104,28 +104,28 @@ class SportCenterDB(DB):
 
     def add_enrollment(self, dni: str, sport: str, schedule: str, check_args: bool = True) -> str:
         if check_args:
-            client = self.get_client(dni)
+            client: Client | str | None = self.get_client(dni)
             if not client:
                 return "Invalid DNI. Are you sure it is right?"
             elif type(client) == str:
                 return client
-            sport_obj = self.get_sport(sport)
+            sport_obj: Sport | str | None = self.get_sport(sport)
             if not sport:
                 return "Invalid sport. Are you sure it is right?"
             elif type(sport_obj) == str:
                 return sport_obj
-        query = f"INSERT INTO {SportEnrollment.TABLE_NAME()} VALUES (%s, %s, %s);"
+        query: str = f"INSERT INTO {SportEnrollment.TABLE_NAME()} VALUES (%s, %s, %s);"
         try:
             self.execute(self.cursor, query, (dni, sport, schedule))
             r = "Enrollment added successfully."
         except UniqueViolation as e:
             r = "This client is already enrolled."
         except:
-            r = "There was an error with the DB" # TODO refactor into constant
+            r = "There was an error with the DB"
         return r
 
     def remove_enrollment(self, dni: str, sport: str) -> str:
-        query = f"""
+        query: str = f"""
             DELETE FROM {SportEnrollment.TABLE_NAME()}
             WHERE
                 {SportEnrollment.CLIENT_ID} = %s and
@@ -144,21 +144,21 @@ class SportCenterDB(DB):
 
     def get_client_details(self, dni: str, check_dni: bool = True) -> str:
         if check_dni:
-            client = self.get_client(dni)
+            client: Client | str | None = self.get_client(dni)
             if not client:
                 return "Invalid DNI. Are you sure it is right?"
             elif type(client) == str:
                 return client
-        query = f"""
+        query: str = f"""
             SELECT d.{Sport.NAME}, d.{Sport.PRICE}, m.{SportEnrollment.PERIOD}
             FROM {Sport.TABLE_NAME()} as d, {SportEnrollment.TABLE_NAME()} as m
             WHERE m.{SportEnrollment.CLIENT_ID} = %s and m.{SportEnrollment.SPORT_ID} like d.{Sport.NAME};"""
         try:
-            d = self.get_all(self.cursor, query, [dni])
+            d: list[tuple[str|int]] = self.get_all(self.cursor, query, [dni])
             if len(d) == 0:
                 r = "This client is not in any sports at the moment."
             else:
-                enrollments = [SportEnrollment(Sport(*e[:-1]), e[-1]) for e in d]
+                enrollments: list[SportEnrollment] = [SportEnrollment(Sport(*e[:-1]), e[-1]) for e in d]
                 r = "List of all the sports enrolled in:\n"
                 r += Client.__deportes__(enrollments)
         except:
@@ -168,18 +168,18 @@ class SportCenterDB(DB):
     # ********* DB Get *********
 
     def get_client(self, dni: str) -> Client | str | None:
-        query = f"SELECT * from {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
+        query: str = f"SELECT * from {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
             self.execute(self.cursor, query, [dni])
-            client = self.cursor.fetchone()
+            client: tuple[any] = self.cursor.fetchone()
             if client is not None:
-                client = Client(*client)
+                client: Client = Client(*client)
             return client
         except:
             return "There was an error with the DB."
 
     def get_clients_dni(self) -> list[str] | str:
-        query = f"SELECT {Client.DNI} from {Client.TABLE_NAME()};"
+        query: str = f"SELECT {Client.DNI} from {Client.TABLE_NAME()};"
         try:
             return [e[0] for e in self.get_all(self.cursor, query)]
         except:
@@ -192,29 +192,27 @@ class SportCenterDB(DB):
             WHERE {SportEnrollment.CLIENT_ID} = %s;"""
         try:
             return [s[0] for s in self.get_all(self.cursor, query, [dni])]
-        except Exception as e:
-            print(e)
+        except:
             return "There was an error with the DB."
 
     def get_sport(self, sport: str) -> Sport | str | None:
-        query = f"SELECT * from {Sport.TABLE_NAME()} WHERE {Sport.NAME} = %s;"
+        query: str = f"SELECT * from {Sport.TABLE_NAME()} WHERE {Sport.NAME} = %s;"
         try:
             self.execute(self.cursor, query, [sport])
-            sport_obj = self.cursor.fetchone()
+            sport_obj: tuple[any] = self.cursor.fetchone()
             if sport_obj is not None:
-                sport_obj = Sport(*sport_obj)
+                sport_obj: Sport = Sport(*sport_obj)
             return sport_obj
         except:
             return "There was an error with the DB."
 
     def get_sports_names(self) -> list[str] | str:
-        query = f"SELECT {Sport.NAME} from {Sport.TABLE_NAME()};"
+        query: str = f"SELECT {Sport.NAME} from {Sport.TABLE_NAME()};"
         try:
             return [e[0] for e in self.get_all(self.cursor, query)]
         except:
             return "There was an error with the DB."
 
-# TODO syntax check
-# TODO Change tui text' options
 # TODO case sensitivity
 # TODO commit only if DB changed
+# TODO refactor strings into constants

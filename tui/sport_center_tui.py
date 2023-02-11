@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 23:41:07 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 23:48:15 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ class SportCenterTUI(TUI):
             ]
         )
         self.db: SportCenterDB = SportCenterDB.init_from_dotenv()
-        print("App ready")
+        print("App ready.")
 
     def run(self) -> None:
         TUI.run(self)
@@ -58,7 +58,7 @@ class SportCenterTUI(TUI):
             print(sports)
             return None
         if len(sports) == 0:
-            print("There are no sports!!")
+            print("There are no sports!")
             return None
         print("Enter the sport:")
         while True:

@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:07:11 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 23:41:27 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 23:47:56 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ class SportCenterDB(DB):
             self.init_db()
         except:
             self.close()
-            raise Exception("There was an error with the DB")
+            raise Exception(self.DB_ERROR_MSG)
 
     def close(self) -> None:
         if self.cursor is not None:
@@ -76,7 +76,7 @@ class SportCenterDB(DB):
         except UniqueViolation as e:
             r = "Ups, the DNI is not valid."
         except:
-            r = "There was an error with the DB."
+            r = self.DB_ERROR_MSG
         return r
 
     def remove_client(self, dni: str) -> str:
@@ -89,7 +89,7 @@ class SportCenterDB(DB):
             )
             r = "Client removed correctly."
         except:
-            r = "There was an error with the DB."
+            r = self.DB_ERROR_MSG
         return r
 
     def get_all_clients(self) -> str:
@@ -99,7 +99,7 @@ class SportCenterDB(DB):
             r = "\n".join([Client(*e).__datos__() for e in sql_result])
             r = "List of all the clients:\n\n" + r
         except:
-            r = "There was an error with the DB."
+            r = self.DB_ERROR_MSG
         return r
 
     def add_enrollment(self, dni: str, sport: str, schedule: str, check_args: bool = True) -> str:
@@ -121,7 +121,7 @@ class SportCenterDB(DB):
         except UniqueViolation as e:
             r = "This client is already enrolled."
         except:
-            r = "There was an error with the DB"
+            r = self.DB_ERROR_MSG
         return r
 
     def remove_enrollment(self, dni: str, sport: str) -> str:
@@ -136,9 +136,9 @@ class SportCenterDB(DB):
                 query,
                 (dni, sport)
             )
-            r = "Enrollment removed"
+            r = "Enrollment removed."
         except:
-            r = "There was an error with the DB"
+            r = self.DB_ERROR_MSG
         return r
 
 
@@ -162,7 +162,7 @@ class SportCenterDB(DB):
                 r = "List of all the sports enrolled in:\n"
                 r += Client.__deportes__(enrollments)
         except:
-            r = "There was an error with the DB."
+            r = self.DB_ERROR_MSG
         return r
 
     # ********* DB Get *********
@@ -176,14 +176,14 @@ class SportCenterDB(DB):
                 client: Client = Client(*client)
             return client
         except:
-            return "There was an error with the DB."
+            return self.DB_ERROR_MSG
 
     def get_clients_dni(self) -> list[str] | str:
         query: str = f"SELECT {Client.DNI} from {Client.TABLE_NAME()};"
         try:
             return [e[0] for e in self.get_all(self.cursor, query)]
         except:
-            return "There was an error with the DB."
+            return self.DB_ERROR_MSG
 
     def get_client_sports(self, dni: str) -> list[str] | str:
         query = f"""
@@ -193,7 +193,7 @@ class SportCenterDB(DB):
         try:
             return [s[0] for s in self.get_all(self.cursor, query, [dni])]
         except:
-            return "There was an error with the DB."
+            return self.DB_ERROR_MSG
 
     def get_sport(self, sport: str) -> Sport | str | None:
         query: str = f"SELECT * from {Sport.TABLE_NAME()} WHERE {Sport.NAME} = %s;"
@@ -204,13 +204,11 @@ class SportCenterDB(DB):
                 sport_obj: Sport = Sport(*sport_obj)
             return sport_obj
         except:
-            return "There was an error with the DB."
+            return self.DB_ERROR_MSG
 
     def get_sports_names(self) -> list[str] | str:
         query: str = f"SELECT {Sport.NAME} from {Sport.TABLE_NAME()};"
         try:
             return [e[0] for e in self.get_all(self.cursor, query)]
         except:
-            return "There was an error with the DB."
-
-# TODO refactor strings into constants
+            return self.DB_ERROR_MSG

@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:08:45 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 23:28:59 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 23:45:15 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,8 @@ import psycopg2
 from psycopg2.extensions import connection
 
 class DB:
+    DB_ERROR_MSG = "There was an error with the DB"
+
     def __init__(self, dbname: str, user: str, passw: str, host: str, port: int):
         self.conx: connection = psycopg2.connect(
             f"host={host} dbname={dbname} user={user} password={passw} port={port}"

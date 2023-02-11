@@ -9,11 +9,11 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 09:56:50 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/07 16:49:07 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 19:16:03 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
-from TUI.sportCenterTUI import SportCenterTUI
+from tui.sport_center_tui import SportCenterTUI
 from psycopg2 import OperationalError
 
 

@@ -4,17 +4,17 @@
 #                                                         |.-----------.|      #
 #                                                         ||           ||      #
 #                                                         ||  Jkutkut  ||      #
-#    sportCenterTUI.py                                    ||           ||      #
+#    sport_center_tui.py                                  ||           ||      #
 #                                                         |'-----------'|      #
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 18:26:51 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 19:17:16 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
-from TUI.tui import TUI
-from db.sportCenterDB import SportCenterDB
+from tui.tui import TUI
+from db.sport_center_db import SportCenterDB
 from model.client import Client
 
 class SportCenterTUI(TUI):
@@ -40,7 +40,7 @@ class SportCenterTUI(TUI):
     def askClientDNI(self) -> str | None:
         dnis = self.db.getClientsDNI()
         if type(dnis) == str:
-            print(dnis) # print error
+            print(dnis)
             return None
         if len(dnis) == 0:
             print("There are no clients.")

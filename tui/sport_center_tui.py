@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 20:48:17 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 22:23:42 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,12 +22,12 @@ class SportCenterTUI(TUI):
         TUI.__init__(
             self,
             [
-                TUI.newOption("Add client", self.ft_addclient),
-                TUI.newOption("Remove client", self.ft_removeclient),
-                TUI.newOption("Show clients", self.ft_showclients),
-                TUI.newOption("Enroll client into a sport", self.ft_registerclientintosport),
-                TUI.newOption("Remove client from sport", self.ft_removeclientfromsport),
-                TUI.newOption("Show details of client", self.ft_showdetails)
+                TUI.new_option("Add client", self.ft_add_client),
+                TUI.new_option("Remove client", self.ft_remove_client),
+                TUI.new_option("Show clients", self.ft_show_clients),
+                TUI.new_option("Enroll client into a sport", self.ft_register_client_into_sport),
+                TUI.new_option("Remove client from sport", self.ft_remove_client_from_sport),
+                TUI.new_option("Show details of client", self.ft_show_details)
             ]
         )
         self.db = SportCenterDB.init_from_dotenv()
@@ -37,8 +37,8 @@ class SportCenterTUI(TUI):
         TUI.run(self)
         self.db.close()
 
-    def askClientDNI(self) -> str | None:
-        dnis = self.db.getClientsDNI()
+    def ask_client_dni(self) -> str | None:
+        dnis = self.db.get_clients_dni()
         if type(dnis) == str:
             print(dnis)
             return None
@@ -47,13 +47,13 @@ class SportCenterTUI(TUI):
             return None
         print("Enter the DNI of the client:")
         while True:
-            dni = self.askRegex("- DNI: ", Client.VALID_DNI_REGEX)
+            dni = self.ask_regex("- DNI: ", Client.VALID_DNI_REGEX)
             if dni in dnis:
                 return dni
             print("Client not found.")
 
-    def askSport(self) -> str | None:
-        sports = self.db.getSportsNames()
+    def ask_sport(self) -> str | None:
+        sports = self.db.get_sports_names()
         if type(sports) == str:
             print(sports)
             return None
@@ -69,38 +69,38 @@ class SportCenterTUI(TUI):
 
     # ********* ACTIONS *********
 
-    def ft_addclient(self):
+    def ft_add_client(self):
         print("Enter the data of the client:")
-        r = self.db.addClient(
+        r = self.db.add_client(
             Client(
                 self.ask(" - Name: ", minlen = 3),
-                self.askRegex(" - DNI: ", Client.VALID_DNI_REGEX),
-                self.askRegex(" - Birth [yyyy-mm-dd]: ", Client.VALID_BIRTH_REGEX),
-                self.askRegex(" - Phone: ", Client.VALID_PHONE_REGEX)
+                self.ask_regex(" - DNI: ", Client.VALID_DNI_REGEX),
+                self.ask_regex(" - Birth [yyyy-mm-dd]: ", Client.VALID_BIRTH_REGEX),
+                self.ask_regex(" - Phone: ", Client.VALID_PHONE_REGEX)
             )
         )
         print(r)
 
-    def ft_removeclient(self):
+    def ft_remove_client(self):
         print("Enter the data of the client:")
-        dni = self.askClientDNI()
+        dni = self.ask_client_dni()
         if not dni:
             return
-        r = self.db.removeClient(dni)
+        r = self.db.remove_client(dni)
         print(r)
 
-    def ft_showclients(self):
-        r = self.db.getAllClients()
+    def ft_show_clients(self):
+        r = self.db.get_all_clients()
         print(r)
 
-    def ft_registerclientintosport(self):
-        dni = self.askClientDNI()
+    def ft_register_client_into_sport(self):
+        dni = self.ask_client_dni()
         if not dni:
             return
-        sport = self.askSport()
+        sport = self.ask_sport()
         if not sport:
             return
-        r = self.db.addEnrollment(
+        r = self.db.add_enrollment(
             dni,
             sport,
             self.ask("- Schedule: "),
@@ -108,21 +108,21 @@ class SportCenterTUI(TUI):
         )
         print(r)
 
-    def ft_removeclientfromsport(self):
-        dni = self.askClientDNI()
+    def ft_remove_client_from_sport(self):
+        dni = self.ask_client_dni()
         if not dni:
             return
-        sports = self.db.getClientSports(dni)
+        sports = self.db.get_client_sports(dni)
         if type(sports) == str:
             print(sports)
             return
-        sport = self.askOptionNoCase("- Select the sport: ", sports)
-        r = self.db.removeEnrollment(dni, sport)
+        sport = self.ask_option_no_case("- Select the sport: ", sports)
+        r = self.db.remove_enrollment(dni, sport)
         print(r)
 
-    def ft_showdetails(self):
-        dni = self.askClientDNI()
+    def ft_show_details(self):
+        dni = self.ask_client_dni()
         if not dni:
             return
-        r = self.db.getClientDetails(dni, check_dni = False)
+        r = self.db.get_client_details(dni, check_dni = False)
         print(r)

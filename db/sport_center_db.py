@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:07:11 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 22:05:03 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 22:21:18 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,7 +64,7 @@ class SportCenterDB(DB):
 
     # ********* ACTIONS *********
 
-    def addClient(self, c: Client) -> str:
+    def add_client(self, c: Client) -> str:
         query = f"INSERT INTO {Client.TABLE_NAME()} VALUES (%s, %s, %s, %s);"
         try:
             self.execute(
@@ -79,7 +79,7 @@ class SportCenterDB(DB):
             r = "There was an error with the DB."
         return r
 
-    def removeClient(self, dni: str) -> str:
+    def remove_client(self, dni: str) -> str:
         query = f"DELETE FROM {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
             self.execute(
@@ -92,24 +92,24 @@ class SportCenterDB(DB):
             r = "There was an error with the DB."
         return r
 
-    def getAllClients(self) -> str:
+    def get_all_clients(self) -> str:
         query = f"SELECT * FROM {Client.TABLE_NAME()};"
         try:
-            sql_result = self.getAll(self.cursor, query)
+            sql_result = self.get_all(self.cursor, query)
             r = "\n".join([Client(*e).__datos__() for e in sql_result])
             r = "List of all the clients:\n\n" + r
         except:
             r = "There was an error with the DB."
         return r
 
-    def addEnrollment(self, dni: str, sport: str, schedule: str, check_args: bool = True) -> str:
+    def add_enrollment(self, dni: str, sport: str, schedule: str, check_args: bool = True) -> str:
         if check_args:
-            client = self.getClient(dni)
+            client = self.get_client(dni)
             if not client:
                 return "Invalid DNI. Are you sure it is right?"
             elif type(client) == str:
                 return client
-            sport_obj = self.getSport(sport)
+            sport_obj = self.get_sport(sport)
             if not sport:
                 return "Invalid sport. Are you sure it is right?"
             elif type(sport_obj) == str:
@@ -124,7 +124,7 @@ class SportCenterDB(DB):
             r = "There was an error with the DB" # TODO refactor into constant
         return r
 
-    def removeEnrollment(self, dni: str, sport: str) -> str:
+    def remove_enrollment(self, dni: str, sport: str) -> str:
         query = f"""
             DELETE FROM {SportEnrollment.TABLE_NAME()}
             WHERE
@@ -142,9 +142,9 @@ class SportCenterDB(DB):
         return r
 
 
-    def getClientDetails(self, dni: str, check_dni: bool = True) -> str:
+    def get_client_details(self, dni: str, check_dni: bool = True) -> str:
         if check_dni:
-            client = self.getClient(dni)
+            client = self.get_client(dni)
             if not client:
                 return "Invalid DNI. Are you sure it is right?"
             elif type(client) == str:
@@ -154,7 +154,7 @@ class SportCenterDB(DB):
             FROM {Sport.TABLE_NAME()} as d, {SportEnrollment.TABLE_NAME()} as m
             WHERE m.{SportEnrollment.CLIENT_ID} = %s and m.{SportEnrollment.SPORT_ID} like d.{Sport.NAME};"""
         try:
-            d = self.getAll(self.cursor, query, [dni])
+            d = self.get_all(self.cursor, query, [dni])
             if len(d) == 0:
                 r = "This client is not in any sports at the moment."
             else:
@@ -167,7 +167,7 @@ class SportCenterDB(DB):
 
     # ********* DB Get *********
 
-    def getClient(self, dni: str) -> Client | str | None:
+    def get_client(self, dni: str) -> Client | str | None:
         query = f"SELECT * from {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
             self.execute(self.cursor, query, [dni])
@@ -178,25 +178,25 @@ class SportCenterDB(DB):
         except:
             return "There was an error with the DB."
 
-    def getClientsDNI(self) -> list[str] | str:
+    def get_clients_dni(self) -> list[str] | str:
         query = f"SELECT {Client.DNI} from {Client.TABLE_NAME()};"
         try:
-            return [e[0] for e in self.getAll(self.cursor, query)]
+            return [e[0] for e in self.get_all(self.cursor, query)]
         except:
             return "There was an error with the DB."
 
-    def getClientSports(self, dni: str) -> list[str] | str:
+    def get_client_sports(self, dni: str) -> list[str] | str:
         query = f"""
             SELECT {SportEnrollment.SPORT_ID}
             FROM {SportEnrollment.TABLE_NAME()}
             WHERE {SportEnrollment.CLIENT_ID} = %s;"""
         try:
-            return [s[0] for s in self.getAll(self.cursor, query, [dni])]
+            return [s[0] for s in self.get_all(self.cursor, query, [dni])]
         except Exception as e:
             print(e)
             return "There was an error with the DB."
 
-    def getSport(self, sport: str) -> Sport | str | None:
+    def get_sport(self, sport: str) -> Sport | str | None:
         query = f"SELECT * from {Sport.TABLE_NAME()} WHERE {Sport.NAME} = %s;"
         try:
             self.execute(self.cursor, query, [sport])
@@ -207,10 +207,10 @@ class SportCenterDB(DB):
         except:
             return "There was an error with the DB."
 
-    def getSportsNames(self) -> list[str] | str:
+    def get_sports_names(self) -> list[str] | str:
         query = f"SELECT {Sport.NAME} from {Sport.TABLE_NAME()};"
         try:
-            return [e[0] for e in self.getAll(self.cursor, query)]
+            return [e[0] for e in self.get_all(self.cursor, query)]
         except:
             return "There was an error with the DB."
 

@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:52:04 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 20:25:22 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 22:11:08 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,16 +19,16 @@ class TUI:
     def __init__(self, options) -> None:
         self.running = True
         self.options = options
-        self.options.append(TUI.newOption("exit", self.exit))
+        self.options.append(TUI.new_option("exit", self.exit))
 
-    def newOption(name: str, ft) -> dict:
+    def new_option(name: str, ft) -> dict:
         return {"name": name, "ft": ft}
 
     def run(self) -> None:
         if not self.running:
             raise Exception("Execution ended")
         while self.running:
-            r = self.askOptions(self.options)
+            r = self.ask_options(self.options)
             self.options[r]["ft"]()
 
     def ask(self, question: str, minlen = -1, maxlen = -1) -> str:
@@ -43,7 +43,7 @@ class TUI:
                 continue
             return r
 
-    def askOptions(self, options) -> int:
+    def ask_options(self, options) -> int:
         opts = [f"{i + 1}: {options[i]['name']}" for i in range(len(options))]
         opts = "\nWhat do you want to do?\n" + "\n".join(opts) + "\n-> "
         while True:
@@ -59,7 +59,7 @@ class TUI:
             except ValueError:
                 print("Invalid number")
 
-    def askOptionNoCase(self, question: str, options: list) -> str:
+    def ask_option_no_case(self, question: str, options: list) -> str:
         question = question + " [" + "|".join(options) + "]\n-> "
         options = [o.lower() for o in options]
         while True:
@@ -69,7 +69,7 @@ class TUI:
                     return o
             print("Please, select one of the options. Avaliable:", ", ".join(options))
 
-    def askRegex(self, question: str, regex: str) -> str:
+    def ask_regex(self, question: str, regex: str) -> str:
         while True:
             option = self.ask(question)
             if re.match(regex, option):
@@ -77,7 +77,7 @@ class TUI:
             print("The response is invalid")
 
     def exit(self) -> None:
-        #confirm = self.askOptionNoCase("Are you sure?", ["yes", "no"])
-        #if confirm == "yes":
-        #    self.running = False
+        confirm = self.ask_option_no_case("Are you sure?", ["yes", "no"])
+        if confirm == "yes":
+            self.running = False
         self.running = False # TODO

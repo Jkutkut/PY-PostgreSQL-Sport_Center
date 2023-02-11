@@ -1,3 +1,18 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         .-------------.      #
+#                                                         |.-----------.|      #
+#                                                         ||           ||      #
+#                                                         ||  Jkutkut  ||      #
+#    client.py                                            ||           ||      #
+#                                                         |'-----------'|      #
+#    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
+#                                                        /:::::::::::::::\     #
+#    Created: 2023/02/11 18:05:49 by Jkutkut            /:::===========:::\    #
+#    Updated: 2023/02/11 18:05:52 by Jkutkut            '-----------------'    #
+#                                                                              #
+# **************************************************************************** #
+
 from model.postgresql_model import PostgreSQLModel
 from model.sport_enrollment import SportEnrollment
 

@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/07 11:51:59 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 19:59:15 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 20:17:11 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ class SportCenterTUI(TUI):
                 TUI.newOption("Add client", self.ft_addclient),
                 TUI.newOption("Remove client", self.ft_removeclient),
                 TUI.newOption("Show clients", self.ft_showclients),
-                TUI.newOption("Add client to sport", self.ft_registerclientintosport),
+                TUI.newOption("Enroll client into a sport", self.ft_registerclientintosport),
                 TUI.newOption("Remove client from sport", self.ft_removeclientfromsport),
                 TUI.newOption("Show details of client", self.ft_showdetails)
             ]
@@ -103,9 +103,8 @@ class SportCenterTUI(TUI):
         r = self.db.addEnrollment(
             dni,
             sport,
-            self.ask("- Schedule: ")
-            # self.ask("- Schedule: "),
-            # check_args = False
+            self.ask("- Schedule: "),
+            check_args = False
         )
         print(r)
 

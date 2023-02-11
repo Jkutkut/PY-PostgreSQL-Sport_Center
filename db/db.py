@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:08:45 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 18:29:56 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 20:19:33 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ class DB:
         if self.conx is not None:
             self.conx.close()
 
-    def cursor(self):
+    def new_cursor(self):
         return self.conx.cursor()
 
     def execute_file(self, cx, filename) -> None:

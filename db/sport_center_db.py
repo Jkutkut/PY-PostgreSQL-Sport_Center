@@ -9,7 +9,7 @@
 #    By: Jkutkut  https://github.com/jkutkut              /:::::::::::::\      #
 #                                                        /:::::::::::::::\     #
 #    Created: 2023/02/11 18:07:11 by Jkutkut            /:::===========:::\    #
-#    Updated: 2023/02/11 20:02:15 by Jkutkut            '-----------------'    #
+#    Updated: 2023/02/11 20:18:42 by Jkutkut            '-----------------'    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,11 +28,17 @@ class SportCenterDB(DB):
 
     def __init__(self, user: str, passw: str, host: str, port: int):
         DB.__init__(self, "postgres", user, passw, host, port)
-        self.init_db()
-        self.cg = self.cursor()
+        self.cursor = None
+        try:
+            self.cursor = self.new_cursor()
+            self.init_db()
+        except:
+            self.close()
+            raise Exception("There was an error with the DB")
 
     def close(self) -> None:
-        self.cg.close()
+        if self.cursor is not None:
+            self.cursor.close()
         DB.close(self)
 
     @classmethod
@@ -46,26 +52,23 @@ class SportCenterDB(DB):
         )
 
     def init_db(self) -> None:
-        cx = self.cursor()
-        cx.execute(
+        self.cursor.execute(
             """SELECT EXISTS(
                 SELECT * FROM information_schema.tables where lower(table_name) = lower(%s)
             )""",
             [Client.__TABLE_NAME__]
         )
-        db_exists = cx.fetchone()[0]
+        db_exists = self.cursor.fetchone()[0]
         if not db_exists:
-            self.execute_file(cx, self.CONFIG_FILE)
-        cx.close()
+            self.execute_file(self.cursor, self.CONFIG_FILE)
 
     # ********* ACTIONS *********
 
     def addClient(self, c: Client) -> str:
-        cx = self.cursor()
         query = f"INSERT INTO {Client.TABLE_NAME()} VALUES (%s, %s, %s, %s);"
         try:
             self.execute(
-                cx,
+                self.cursor,
                 query,
                 (c.name, c.dni, c.birth, c.phone)
             )
@@ -74,38 +77,32 @@ class SportCenterDB(DB):
             r = "Ups, the DNI is not valid."
         except:
             r = "There was an error with the DB."
-        cx.close()
         return r
 
     def removeClient(self, dni: str) -> str:
-        cx = self.cursor()
         query = f"DELETE FROM {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
             self.execute(
-                cx,
+                self.cursor,
                 query,
                 tuple([dni])
             )
             r = "Client removed correctly."
         except:
             r = "There was an error with the DB."
-        cx.close()
         return r
 
     def getAllClients(self) -> str:
-        cx = self.cursor()
         query = f"SELECT * FROM {Client.TABLE_NAME()};"
         try:
-            sql_result = self.getAll(cx, query)
+            sql_result = self.getAll(self.cursor, query)
             r = "\n".join([Client(*e).__datos__() for e in sql_result])
             r = "List of all the clients:\n\n" + r
         except:
             r = "There was an error with the DB."
-        cx.close()
         return r
 
     def addEnrollment(self, dni: str, sport: str, schedule: str, check_arg: bool = True) -> str:
-        cx = self.cursor()
         print(dni, sport, schedule, check_arg)
         if check_arg:
             client = self.getClient(dni)
@@ -120,18 +117,16 @@ class SportCenterDB(DB):
                 return sport_obj
         query = f"INSERT INTO {SportEnrollment.TABLE_NAME()} VALUES (%s, %s, %s);"
         try:
-            self.execute(cx, query, (dni, sport, schedule))
+            self.execute(self.cursor, query, (dni, sport, schedule))
             r = "Enrollment added successfully"
         except Exception as e:
             print(e)
             r = "There was an error with the DB" # TODO refactor into constant
-        cx.close()
         return r
 
 
 
     def getClientDetails(self, dni: str, check_dni: bool = True) -> str:
-        cx = self.cursor()
         if check_dni:
             client = self.getClient(dni)
             if not client:
@@ -143,7 +138,7 @@ class SportCenterDB(DB):
             FROM {Sport.TABLE_NAME()} as d, {SportEnrollment.TABLE_NAME()} as m
             WHERE m.{SportEnrollment.CLIENT_ID} = %s and m.{SportEnrollment.SPORT_ID} like d.{Sport.NAME};"""
         try:
-            d = self.getAll(cx, query, [dni])
+            d = self.getAll(self.cursor, query, [dni])
             if len(d) == 0:
                 r = "This client is not in any sports at the moment."
             else:
@@ -152,7 +147,6 @@ class SportCenterDB(DB):
                 r += Client.__deportes__(enrollments)
         except:
             r = "There was an error with the DB."
-        cx.close()
         return r
 
     # ********* DB Get *********
@@ -160,8 +154,8 @@ class SportCenterDB(DB):
     def getClient(self, dni: str) -> Client | str | None:
         query = f"SELECT * from {Client.TABLE_NAME()} WHERE {Client.DNI} = %s;"
         try:
-            self.execute(self.cg, query, [dni])
-            client = self.cg.fetchone()
+            self.execute(self.cursor, query, [dni])
+            client = self.cursor.fetchone()
             if client is not None:
                 client = Client(*client)
             return client
@@ -171,18 +165,17 @@ class SportCenterDB(DB):
     def getClientsDNI(self) -> list[str] | str:
         query = f"SELECT {Client.DNI} from {Client.TABLE_NAME()};"
         try:
-            return [e[0] for e in self.getAll(self.cg, query)]
+            return [e[0] for e in self.getAll(self.cursor, query)]
         except:
             return "There was an error with the DB."
 
     def getSport(self, sport: str) -> Sport | str | None:
         query = f"SELECT * from {Sport.TABLE_NAME()} WHERE {Sport.NAME} = %s;"
         try:
-            self.execute(self.cg, query, [sport])
-            sport_obj = self.cg.fetchone()
+            self.execute(self.cursor, query, [sport])
+            sport_obj = self.cursor.fetchone()
             if sport_obj is not None:
                 sport_obj = Sport(*sport_obj)
-            print(sport_obj) # TODO 
             return sport_obj
         except:
             return "There was an error with the DB."
@@ -190,11 +183,10 @@ class SportCenterDB(DB):
     def getSportsNames(self) -> list[str] | str:
         query = f"SELECT {Sport.NAME} from {Sport.TABLE_NAME()};"
         try:
-            return [e[0] for e in self.getAll(self.cg, query)]
+            return [e[0] for e in self.getAll(self.cursor, query)]
         except:
             return "There was an error with the DB."
 
 # TODO syntax check
 # TODO Change tui text' options
-# TODO single cursor
 # TODO case sensitivity
